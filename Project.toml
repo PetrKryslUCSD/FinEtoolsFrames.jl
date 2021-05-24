@@ -1,7 +1,7 @@
 name = "FinEtoolsFlexBeams"
 uuid = "1d6e2fc3-29aa-4bd6-bf55-212bcb8e2840"
 authors = ["Petr Krysl <pkrysl@ucsd.edu>"]
-version = "0.4.0"
+version = "1.0.0"
 
 [deps]
 Arpack = "7d9fca2a-8960-54d3-9f78-7d1dccf2cb97"
@@ -17,12 +17,12 @@ SymRCM = "286e6d88-80af-4590-acc9-0001b223b9bd"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
-Arpack = "^0.4"
-Dierckx = "^0.4"
-FinEtools = "^4.8"
-FinEtoolsDeforLinear = "^0.4"
+Arpack = "^0.5"
+Dierckx = "^0.5"
+FinEtools = "^5"
+FinEtoolsDeforLinear = "^1"
 JSON = "^0.21"
 ORCA = "^0.5"
 PlotlyJS = "^0.14"
 SymRCM = "^0.2"
-julia = "~1.5"
+julia = "~1.6"

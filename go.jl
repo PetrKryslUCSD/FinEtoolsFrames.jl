@@ -1,4 +1,5 @@
 using Pkg; Pkg.activate("."); Pkg.instantiate()
+using Revise
 
 # include(".\\examples\\nonlin_statics\\twisting_circle_examples.jl");                                                                         
 # pl = twisting_circle_examples.twisting_circle_1() 
@@ -30,7 +31,7 @@ using Pkg; Pkg.activate("."); Pkg.instantiate()
 # run(`magick snap*.png anim.gif`)
 
 # include(".\\examples\\nonlin_transient\\twisting_circle_examples.jl");                                                                         
-# twisting_circle_examples.twisting_circle() 
+# twisting_circle_examples.allrun() 
 
 include(".\\examples\\nonlin_statics\\curved_cantilever_examples.jl");                                                                         
 curved_cantilever_examples.curved_cantilever_thin() 

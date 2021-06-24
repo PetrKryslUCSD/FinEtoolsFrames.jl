@@ -265,38 +265,41 @@ function default_layout_3d(; kwargs...)
     if :autosize in keys(kwargs)
         autosize = kwargs[:autosize]; kwargs = removepair(kwargs, :autosize)
     end
-    width = "100%"
+    width = 360
     if :width in keys(kwargs)
         width = kwargs[:width]; kwargs = removepair(kwargs, :width)
     end
-    height = "100%"
+    height = 240
     if :height in keys(kwargs)
         height = kwargs[:height]; kwargs = removepair(kwargs, :height)
     end
-    layout = Layout(width=width, height=height, autosize=autosize, title=title,
-        scene=attr(
-            xaxis = attr(title="X", gridcolor="rgb(255, 255, 255)",
-              zerolinecolor="rgb(255, 255, 255)",
-              showbackground=true,
-              backgroundcolor=BACKGROUNDCOLOR),
-            yaxis = attr(title="Y", gridcolor="rgb(255, 255, 255)",
-             zerolinecolor="rgb(255, 255, 255)",
-             showbackground=true,
-             backgroundcolor=BACKGROUNDCOLOR),
-            zaxis = attr(title="Z", gridcolor="rgb(255, 255, 255)",
-             zerolinecolor="rgb(255, 255, 255)",
-             showbackground=true,
-             backgroundcolor=BACKGROUNDCOLOR),
-            camera = attr(
-                up=attr(x=0, y=0, z=1),
-                center=attr(x=0, y=0, z=0),
-                eye=attr(x=1.25, y=1.25, z=1.25),
-                projection = attr(type = "orthographic") # alternative: projection = attr(type = "perspective")
+    scene=attr(
+        xaxis = attr(title="X", gridcolor="rgb(255, 255, 255)",
+          zerolinecolor="rgb(255, 255, 255)",
+          showbackground=true,
+          backgroundcolor=BACKGROUNDCOLOR),
+        yaxis = attr(title="Y", gridcolor="rgb(255, 255, 255)",
+           zerolinecolor="rgb(255, 255, 255)",
+           showbackground=true,
+           backgroundcolor=BACKGROUNDCOLOR),
+        zaxis = attr(title="Z", gridcolor="rgb(255, 255, 255)",
+           zerolinecolor="rgb(255, 255, 255)",
+           showbackground=true,
+           backgroundcolor=BACKGROUNDCOLOR),
+        camera = attr(
+            up=attr(x=0, y=0, z=1),
+            center=attr(x=0, y=0, z=0),
+            eye=attr(x=1.25, y=1.25, z=1.25),
+            projection = attr(type = "orthographic") # alternative: projection = attr(type = "perspective")
             ),
-            aspectratio = aspectratio,
-            aspectmode = "manual"),
-        showlegend=false,
-        )
+        aspectratio = aspectratio,
+        aspectmode = "manual")
+    if autosize
+        layout = Layout(autosize=autosize, title=title, scene=scene, showlegend=false)
+    else
+        layout = Layout(width=width, height=height, title=title, scene=scene, showlegend=false,)
+    end
+    
     return layout
 end
 

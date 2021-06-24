@@ -14,7 +14,7 @@ using LinearAlgebra: dot
 using Arpack
 using LinearAlgebra
 using SparseArrays
-using FinEtoolsBeamsVis: plot_nodes, plot_midline, render, plot_space_box, plot_solid, space_aspectratio, save_to_json
+using FinEtoolsFlexBeams.VisUtilModule: plot_nodes, plot_midline, render, plot_space_box, plot_solid, space_aspectratio, save_to_json
 
 function tippling_1()
     # Parameters:

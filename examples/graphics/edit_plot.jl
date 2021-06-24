@@ -2,7 +2,7 @@ using FinEtools
 using FinEtoolsFlexBeams.FESetCorotBeamModule: FESetL2CorotBeam
 using FinEtoolsFlexBeams.CrossSectionModule: CrossSectionCircle, CrossSectionRectangle
 using FinEtoolsFlexBeams.MeshFrameMemberModule: frame_member, merge_members
-using FinEtoolsBeamsVis: plot_nodes, plot_midline, render, plot_space_box, plot_solid, space_aspectratio, default_layout_3d, plot_from_json
+using FinEtoolsFlexBeams.VisUtilModule: plot_nodes, plot_midline, render, plot_space_box, plot_solid, space_aspectratio, default_layout_3d, plot_from_json
 using PlotlyJS
 using JSON
 
@@ -19,9 +19,10 @@ fens, fes = frame_member(xyz, nL, cs)
 plots = cat(plot_nodes(fens),
     plot_midline(fens, fes; color = "rgb(155, 155, 255)", lwidth = 4),
     dims = 1)
-layout = default_layout_3d(width = 500, height = 500)
+layout = default_layout_3d(autosize=true)
+layout = default_layout_3d(width=400, height=400)
 layout[:showLegend] = true
-@show layout
+
 
 # options=Dict(:showSendToCloud=>true, 
 #     :fillFrame=>true,
@@ -30,5 +31,5 @@ layout[:showLegend] = true
 pl = plot(plots, layout; 
     options=Dict(:plotlyServerURL=>"https://chart-studio.plotly.com", :showSendToCloud=>true, :showLink => true))
 display(pl)
-
+true
 

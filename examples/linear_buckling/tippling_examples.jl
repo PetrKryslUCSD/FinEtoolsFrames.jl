@@ -77,7 +77,7 @@ function tippling_1()
     Kg = geostiffness(femm, geom0, u0, Rfield0, dchi);
 
     # Solve the eigenvalue problem
-    d,v,nev,nconv = eigs(-Kg, K; nev=neigvs, which=:LM)
+    d,v,nconv = eigs(-Kg, K; nev=neigvs, which=:LM, explicittransform=:none)
     fs = 1.0 ./ (d) ./ magn_scale
     println("Buckling factors: $fs [ND]")
     println("Reference: $reffs [ND]")

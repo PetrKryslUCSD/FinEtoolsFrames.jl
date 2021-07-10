@@ -62,7 +62,7 @@ function test()
         M = mass(femm, geom0, u0, Rfield0, dchi);
 
         # Solve the eigenvalue problem
-        d,v,nev,nconv = eigs(K, M; nev=2*neigvs, which=:SM)
+        d,v,nconv = eigs(K, M; nev=2*neigvs, which=:SM, explicittransform=:none)
         fs = real(sqrt.(complex(d)))/(2*pi)
         # println("Natural frequencies: $fs [Hz]")
         # println("Reference: $reffs [Hz]")

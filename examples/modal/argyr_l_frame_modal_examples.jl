@@ -16,7 +16,7 @@ using LinearAlgebra: dot
 using Arpack
 using LinearAlgebra
 using SparseArrays
-using FinEtoolsBeamsVis: plot_points, plot_nodes, plot_midline, render, plot_space_box, plot_solid, space_aspectratio, default_layout_3d
+using FinEtoolsFlexBeams.VisUtilModule: plot_points, plot_nodes, plot_midline, render, plot_space_box, plot_solid, space_aspectratio, default_layout_3d
 using PlotlyJS
 using JSON
 
@@ -67,7 +67,7 @@ function argyr_l_frame_modal()
     M = mass(femm, geom0, u0, Rfield0, dchi);
 
     # Solve the eigenvalue problem
-    d,v,nev,nconv = eigs(K, M; nev=2*neigvs, which=:SM)
+    d,v,nconv = eigs(K, M; nev=2*neigvs, which=:SM, explicittransform=:none)
     fs = real(sqrt.(complex(d)))/(2*pi)
     println("Natural frequencies: $fs [Hz]")
     println("Reference: $reffs [Hz]")
@@ -75,10 +75,14 @@ function argyr_l_frame_modal()
     # Visualize vibration modes
     scattersysvec!(dchi, v[:, 1])
     update_rotation_field!(Rfield0, dchi)
-    plots = cat(plot_nodes(fens),
+    tbox = plot_space_box([[-L/2 -L/2 0]; [L/2 L/2 L]])
+    plots = cat(tbox, plot_nodes(fens),
         plot_solid(fens, fes; x = geom0.values, u = dchi.values[:, 1:3], R = Rfield0.values);
         dims = 1)
-    render(plots; aspectratio = space_aspectratio(fens.xyz))
+    layout = default_layout_3d()
+    layout[:scene][:aspectratio] = space_aspectratio(fens.xyz)
+    layout[:scene][:aspectmode] = "manual"
+    render(plots; layout = layout)
 
     return true
 end # argyr_l_frame_modal
@@ -91,7 +95,7 @@ function argyr_l_frame_modal_anim()
     b=3.0; h=30.0; L=240.0; # cross-sectional dimensions and length of each leg in millimeters
     # Choose the mass formulation:
     mass_type=2;
-    scale = 0.4
+    scale = 40.4
 
     # Reference frequencies
     reffs = [11.2732, 30.5269]
@@ -101,7 +105,6 @@ function argyr_l_frame_modal_anim()
     cs = CrossSectionRectangle(s -> b, s -> h, s -> [0.0, 1.0, 0.0])
 
     # Select the number of elements per leg.
-    xyz =
     n = 4;
     members = []
     push!(members, frame_member([0 0 L; L 0 L], n, cs))
@@ -132,7 +135,7 @@ function argyr_l_frame_modal_anim()
     M = mass(femm, geom0, u0, Rfield0, dchi);
 
     # Solve the eigenvalue problem
-    d,v,nev,nconv = eigs(K, M; nev=2*neigvs, which=:SM)
+    d,v,nconv = eigs(K, M; nev=2*neigvs, which=:SM, explicittransform=:none)
     fs = real(sqrt.(complex(d)))/(2*pi)
     println("Natural frequencies: $fs [Hz]")
     println("Reference: $reffs [Hz]")

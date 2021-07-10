@@ -20,14 +20,9 @@ plots = cat(plot_nodes(fens),
     plot_midline(fens, fes; color = "rgb(155, 155, 255)", lwidth = 4),
     dims = 1)
 layout = default_layout_3d(autosize=true)
-layout = default_layout_3d(width=400, height=400)
+# layout = default_layout_3d(width=400, height=400)
 layout[:showLegend] = true
 
-
-# options=Dict(:showSendToCloud=>true, 
-#     :fillFrame=>true,
-#     :autosizable=> true,
-#     :showLink => true)
 pl = plot(plots, layout; 
     options=Dict(:plotlyServerURL=>"https://chart-studio.plotly.com", :showSendToCloud=>true, :showLink => true))
 display(pl)

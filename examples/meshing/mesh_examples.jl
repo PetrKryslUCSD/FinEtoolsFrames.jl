@@ -4,7 +4,7 @@ using FinEtools
 using FinEtoolsFlexBeams.FESetCorotBeamModule: FESetL2CorotBeam
 using FinEtoolsFlexBeams.CrossSectionModule: CrossSectionCircle, CrossSectionRectangle
 using FinEtoolsFlexBeams.MeshFrameMemberModule: frame_member, merge_members
-using FinEtoolsBeamsVis: plot_nodes, plot_midline, render, plot_space_box, plot_solid, space_aspectratio
+using FinEtoolsFlexBeams.VisUtilModule: plot_nodes, plot_midline, render, plot_space_box, plot_solid, space_aspectratio
 using PlotlyJS
 using JSON
 

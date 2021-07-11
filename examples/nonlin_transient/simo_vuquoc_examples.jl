@@ -379,165 +379,162 @@ function simo_vuquoc_compare()
     return true
 end # simo_vuquoc_compare
 
-function argyr_swing_compare()
-    # Parameters:
-    E = 71240.0;#MPa
-    nu = 0.31;# Poisson ratio
-    rho = 5.0e-9;
-    b=10; h=30; L=240; #cross-sectional dimensions and length of each leg in millimeters
-    utol = 1e-3;
-    maxit = 30
-    Fmag = 500;
-    dt = 0.001;
-    tend = 0.5;
-    ng = 1/2; nb = 1/4*(1/2+ng)^2;
-    # Choose the mass formulation:
-    mass_type=1;
+# function argyr_swing_compare()
+#     # Parameters:
+#     E = 71240.0;#MPa
+#     nu = 0.31;# Poisson ratio
+#     rho = 5.0e-9;
+#     b=10; h=30; L=240; #cross-sectional dimensions and length of each leg in millimeters
+#     utol = 1e-3;
+#     maxit = 30
+#     Fmag = 500;
+#     dt = 0.001;
+#     tend = 0.5;
+#     ng = 1/2; nb = 1/4*(1/2+ng)^2;
+#     # Choose the mass formulation:
+#     mass_type=1;
 
-    # Cross-sectional properties
-    cs = CrossSectionRectangle(s -> b, s -> h, s -> [0.0, 0.0, 1.0])
+#     # Cross-sectional properties
+#     cs = CrossSectionRectangle(s -> b, s -> h, s -> [0.0, 0.0, 1.0])
 
-    # Select the number of elements per leg.
-    n=4;
-    tolerance=L/n/100;
-    members = []
-    push!(members, frame_member([0 L 0;L L 0], n, cs))
-    push!(members, frame_member([L L 0;L 0 0], n, cs))
-    fens, fes = merge_members(members; tolerance = tolerance);
+#     # Select the number of elements per leg.
+#     n=4;
+#     tolerance=L/n/100;
+#     members = []
+#     push!(members, frame_member([0 L 0;L L 0], n, cs))
+#     push!(members, frame_member([L L 0;L 0 0], n, cs))
+#     fens, fes = merge_members(members; tolerance = tolerance);
 
-    # Material properties
-    material = MatDeforElastIso(DeforModelRed3D, rho, E, nu, 0.0)
+#     # Material properties
+#     material = MatDeforElastIso(DeforModelRed3D, rho, E, nu, 0.0)
 
-    # Construct the requisite fields, geometry and displacement
-    # Initialize configuration variables
-    geom0 = NodalField(fens.xyz)
-    u0 = NodalField(zeros(size(fens.xyz,1), 3))
-    Rfield0 = initial_Rfield(fens)
-    dchi = NodalField(zeros(size(fens.xyz,1), 6))
+#     # Construct the requisite fields, geometry and displacement
+#     # Initialize configuration variables
+#     geom0 = NodalField(fens.xyz)
+#     u0 = NodalField(zeros(size(fens.xyz,1), 3))
+#     Rfield0 = initial_Rfield(fens)
+#     dchi = NodalField(zeros(size(fens.xyz,1), 6))
 
-    # Locate some nodes
-    box = fill(0.0, 6)
-    # The pinned end is
-    initbox!(box, [0,L,0])
-    pinnedn = selectnode(fens; box = box, inflate = tolerance)
-    # The force is applied at the elbow
-    initbox!(box, [L,L,0])
-    elbown = selectnode(fens; box = box, inflate = tolerance)
-    # Tip is tracked
-    initbox!(box, [L,0,0])
-    tipn = selectnode(fens; box = box, inflate = tolerance)
+#     # Locate some nodes
+#     box = fill(0.0, 6)
+#     # The pinned end is
+#     initbox!(box, [0,L,0])
+#     pinnedn = selectnode(fens; box = box, inflate = tolerance)
+#     # The force is applied at the elbow
+#     initbox!(box, [L,L,0])
+#     elbown = selectnode(fens; box = box, inflate = tolerance)
+#     # Tip is tracked
+#     initbox!(box, [L,0,0])
+#     tipn = selectnode(fens; box = box, inflate = tolerance)
 
 
-    # Apply EBC's
-    for i in [1, 2, 3]
-        setebc!(dchi, pinnedn, true, i)
-    end
-    applyebc!(dchi)
-    numberdofs!(dchi);
-    dchi.dofnums
+#     # Apply EBC's
+#     for i in [1, 2, 3]
+#         setebc!(dchi, pinnedn, true, i)
+#     end
+#     applyebc!(dchi)
+#     numberdofs!(dchi);
+#     dchi.dofnums
 
-    # Additional fields
-    stepdchi = deepcopy(dchi)
-    u1 = deepcopy(u0)
-    v0 = deepcopy(dchi) # need the numbering of the degrees of freedom
-    v1 = deepcopy(dchi)
-    a1 = deepcopy(dchi) # zero out the Acceleration
-    a0 = deepcopy(dchi) # zero out the Acceleration
-    Rfield1 = deepcopy(Rfield0)
-    v0v = gathersysvec(v0)
-    a0v = gathersysvec(a0)
-    vpv = gathersysvec(v0);
-    dchipv = gathersysvec(dchi);
-    stepdchiv = gathersysvec(dchi);
-    rhs = gathersysvec(dchi);
-    TMPv = deepcopy(rhs)
-    utol = 1e-13*dchi.nfreedofs;
+#     # Additional fields
+#     stepdchi = deepcopy(dchi)
+#     u1 = deepcopy(u0)
+#     v0 = deepcopy(dchi) # need the numbering of the degrees of freedom
+#     v1 = deepcopy(dchi)
+#     a1 = deepcopy(dchi) # zero out the Acceleration
+#     a0 = deepcopy(dchi) # zero out the Acceleration
+#     Rfield1 = deepcopy(Rfield0)
+#     v0v = gathersysvec(v0)
+#     a0v = gathersysvec(a0)
+#     vpv = gathersysvec(v0);
+#     dchipv = gathersysvec(dchi);
+#     stepdchiv = gathersysvec(dchi);
+#     rhs = gathersysvec(dchi);
+#     TMPv = deepcopy(rhs)
+#     utol = 1e-13*dchi.nfreedofs;
 
-    reft = range(0, 0.5, length = size(tipus,1))
-    plots = cat(
-        scatter(;x=reft, y=tipus[:,1], mode="lines", line_color = "rgb(255, 0, 0)", name="Tip-x"),
-        scatter(;x=reft, y=tipus[:,2], mode="lines", line_color = "rgb(0, 255, 0)", name="Tip-y"),
-        scatter(;x=reft, y=tipus[:,3], mode="lines", line_color = "rgb(0, 0, 255)", name="Tip-z"),
-        scatter(;x=reft, y=elbowus[:,1], mode="lines", line_color = "rgb(255, 0, 0)", name="Elbow-x"),
-        scatter(;x=reft, y=elbowus[:,2], mode="lines", line_color = "rgb(0, 255, 0)", name="Elbow-y"),
-        scatter(;x=reft, y=elbowus[:,3], mode="lines", line_color = "rgb(0, 0, 255)", name="Elbow-z"); 
-        dims = 1)
-    layout = Layout(width=700, height=500)
-    pl = plot(plots, layout)
-    display(pl)
+#     reft = range(0, 0.5, length = size(Aus,1))
+#     plots = cat(
+#         scatter(;x=reft, y=Aus[:,1], mode="lines", line_color = "rgb(255, 0, 0)", name="Tip-x"),
+#         scatter(;x=reft, y=Aus[:,2], mode="lines", line_color = "rgb(0, 255, 0)", name="Tip-y"),
+#         # scatter(;x=reft, y=Aus[:,3], mode="lines", line_color = "rgb(0, 0, 255)", name="Tip-z"),
+#         dims = 1)
+#     layout = Layout(width=700, height=500)
+#     pl = plot(plots, layout)
+#     display(pl)
 
-    femm = FEMMCorotBeam(IntegDomain(fes, GaussRule(1, 2)), material)
-    loadbdry = FESetP1(reshape(elbown, 1, 1))
-    lfemm = FEMMBase(IntegDomain(loadbdry, PointRule()))
+#     femm = FEMMCorotBeam(IntegDomain(fes, GaussRule(1, 2)), material)
+#     loadbdry = FESetP1(reshape(elbown, 1, 1))
+#     lfemm = FEMMBase(IntegDomain(loadbdry, PointRule()))
 
-    t = 0.0; #
-    step = 0;
-    while (t <= tend)
-        t = t + dt;
-        # println("Time $(t)"); # pause
-        # Initialization
-        applyebc!(dchi) # Apply boundary conditions
-        u1.values[:] = u0.values[:]; # guess
-        Rfield1.values[:] = Rfield0.values[:]; # guess
-        stepdchi.values[:] .= 0.0;# Total increment in current step
-        a1.values[:] = -(1/nb/dt)*v0.values[:] -(1/2-nb)/nb*a0.values[:];
-        v1.values[:] = v0.values[:] + dt*((1-ng)*a0.values[:] + ng*a1.values[:]);
-        gathersysvec!(v0, v0v)
-        gathersysvec!(a0, a0v)
-        dchipv = dt*v0v + (dt^2/2*(1-2*nb))*a0v
-        vpv = v0v +(dt*(1-ng))*a0v;
-        fi = ForceIntensity(FFlt[0, 0, (t<0.2)*((t<0.1)*t+(t>0.1)*(0.2-t))*Fmag, 0, 0, 0]);
+#     t = 0.0; #
+#     step = 0;
+#     while (t <= tend)
+#         t = t + dt;
+#         # println("Time $(t)"); # pause
+#         # Initialization
+#         applyebc!(dchi) # Apply boundary conditions
+#         u1.values[:] = u0.values[:]; # guess
+#         Rfield1.values[:] = Rfield0.values[:]; # guess
+#         stepdchi.values[:] .= 0.0;# Total increment in current step
+#         a1.values[:] = -(1/nb/dt)*v0.values[:] -(1/2-nb)/nb*a0.values[:];
+#         v1.values[:] = v0.values[:] + dt*((1-ng)*a0.values[:] + ng*a1.values[:]);
+#         gathersysvec!(v0, v0v)
+#         gathersysvec!(a0, a0v)
+#         dchipv = dt*v0v + (dt^2/2*(1-2*nb))*a0v
+#         vpv = v0v +(dt*(1-ng))*a0v;
+#         fi = ForceIntensity(FFlt[0, 0, (t<0.2)*((t<0.1)*t+(t>0.1)*(0.2-t))*Fmag, 0, 0, 0]);
 
-        iter = 1;
-        while true
-            F = distribloads(lfemm, geom0, dchi, fi, 3);
-            Fr = restoringforce(femm, geom0, u1, Rfield1, dchi);       # Internal forces
-            @. rhs = F + Fr;
-            K = stiffness(femm, geom0, u1, Rfield1, dchi);
-            M = mass(femm, geom0, u1, Rfield1, dchi);
-            G = gyroscopic(femm, geom0, u1, Rfield1, v1, dchi);
-            gathersysvec!(stepdchi, stepdchiv)
-            @. TMPv = ((-1/(nb*dt^2))*stepdchiv+(1/(nb*dt^2))*dchipv)
-            rhs .+= M*TMPv
-            @. TMPv = ((-ng/nb/dt)*stepdchiv+(ng/nb/dt)*dchipv - vpv)
-            rhs .+= G*TMPv;
-            dchi = scattersysvec!(dchi, (K+(ng/nb/dt)*G+(1/(nb*dt^2))*M)\rhs); # Disp. incr
-            u1.values[:] += (dchi.values[:,1:3])[:];   # increment displacement
-            stepdchi.values[:] += dchi.values[:]
-            v1.values[:] += (ng/nb/dt)*dchi.values[:];
-            a1.values[:] += (1/nb/dt^2)*dchi.values[:];
-            update_rotation_field!(Rfield1, dchi)
-            if maximum(abs.(dchi.values[:])) < utol # convergence check
-                break;
-            end
-            if (iter > maxit)# bailout for failed convergence
-                error("Possible failed convergence");
-            end
-            iter += 1;
-        end
-        u0.values[:] = u1.values[:];       # update the displacement
-        Rfield0.values[:] = Rfield1.values[:]; # update the rotations
-        v0.values[:] = v1.values[:];       # update the velocities
-        a0.values[:] = a1.values[:];       # update the accelerations
+#         iter = 1;
+#         while true
+#             F = distribloads(lfemm, geom0, dchi, fi, 3);
+#             Fr = restoringforce(femm, geom0, u1, Rfield1, dchi);       # Internal forces
+#             @. rhs = F + Fr;
+#             K = stiffness(femm, geom0, u1, Rfield1, dchi);
+#             M = mass(femm, geom0, u1, Rfield1, dchi);
+#             G = gyroscopic(femm, geom0, u1, Rfield1, v1, dchi);
+#             gathersysvec!(stepdchi, stepdchiv)
+#             @. TMPv = ((-1/(nb*dt^2))*stepdchiv+(1/(nb*dt^2))*dchipv)
+#             rhs .+= M*TMPv
+#             @. TMPv = ((-ng/nb/dt)*stepdchiv+(ng/nb/dt)*dchipv - vpv)
+#             rhs .+= G*TMPv;
+#             dchi = scattersysvec!(dchi, (K+(ng/nb/dt)*G+(1/(nb*dt^2))*M)\rhs); # Disp. incr
+#             u1.values[:] += (dchi.values[:,1:3])[:];   # increment displacement
+#             stepdchi.values[:] += dchi.values[:]
+#             v1.values[:] += (ng/nb/dt)*dchi.values[:];
+#             a1.values[:] += (1/nb/dt^2)*dchi.values[:];
+#             update_rotation_field!(Rfield1, dchi)
+#             if maximum(abs.(dchi.values[:])) < utol # convergence check
+#                 break;
+#             end
+#             if (iter > maxit)# bailout for failed convergence
+#                 error("Possible failed convergence");
+#             end
+#             iter += 1;
+#         end
+#         u0.values[:] = u1.values[:];       # update the displacement
+#         Rfield0.values[:] = Rfield1.values[:]; # update the rotations
+#         v0.values[:] = v1.values[:];       # update the velocities
+#         a0.values[:] = a1.values[:];       # update the accelerations
 
-        if (mod(step,10)==0)
-            plots = cat(pl.plot.data, 
-                scatter(;x=[t], y=[u1.values[tipn[1], 1]], mode="markers", line_color = "rgb(255, 0, 0)", showlegend=false),
-                scatter(;x=[t], y=[u1.values[tipn[1], 2]], mode="markers", line_color = "rgb(0, 255, 0)", showlegend=false),
-                scatter(;x=[t], y=[u1.values[tipn[1], 3]], mode="markers", line_color = "rgb(0, 0, 255)", showlegend=false),
-                scatter(;x=[t], y=[u1.values[elbown[1], 1]], mode="markers", line_color = "rgb(255, 0, 0)", showlegend=false),
-                scatter(;x=[t], y=[u1.values[elbown[1], 2]], mode="markers", line_color = "rgb(0, 255, 0)", showlegend=false),
-                scatter(;x=[t], y=[u1.values[elbown[1], 3]], mode="markers", line_color = "rgb(0, 0, 255)", showlegend=false); 
-                dims = 1)
-            react!(pl, plots, pl.plot.layout)
-            sleep(0.1)
-        end
+#         if (mod(step,10)==0)
+#             plots = cat(pl.plot.data, 
+#                 scatter(;x=[t], y=[u1.values[tipn[1], 1]], mode="markers", line_color = "rgb(255, 0, 0)", showlegend=false),
+#                 scatter(;x=[t], y=[u1.values[tipn[1], 2]], mode="markers", line_color = "rgb(0, 255, 0)", showlegend=false),
+#                 scatter(;x=[t], y=[u1.values[tipn[1], 3]], mode="markers", line_color = "rgb(0, 0, 255)", showlegend=false),
+#                 scatter(;x=[t], y=[u1.values[elbown[1], 1]], mode="markers", line_color = "rgb(255, 0, 0)", showlegend=false),
+#                 scatter(;x=[t], y=[u1.values[elbown[1], 2]], mode="markers", line_color = "rgb(0, 255, 0)", showlegend=false),
+#                 scatter(;x=[t], y=[u1.values[elbown[1], 3]], mode="markers", line_color = "rgb(0, 0, 255)", showlegend=false); 
+#                 dims = 1)
+#             react!(pl, plots, pl.plot.layout)
+#             sleep(0.1)
+#         end
 
-        step=step+1;
-    end
+#         step=step+1;
+#     end
 
-    return true
-end # argyr_swing_animated
+#     return true
+# end # argyr_swing_animated
 
 function allrun()
     println("#####################################################")
@@ -546,9 +543,9 @@ function allrun()
     println("#####################################################")
     println("# simo_vuquoc_compare ")
     simo_vuquoc_compare()
-    println("#####################################################")
-    println("# argyr_swing_compare ")
-    argyr_swing_compare()
+    # println("#####################################################")
+    # println("# argyr_swing_compare ")
+    # argyr_swing_compare()
     return true
 end # function allrun
 

@@ -21,13 +21,12 @@ plots = cat(plot_nodes(fens),
     dims = 1)
 layout = default_layout_3d(width = 500, height = 500)
 layout[:title] = ""
-layout[:showSendToCloud] = true
-layout[:showLegend] = true
-layout[:showEditInChartStudio] = true
+config  = PlotConfig(plotlyServerURL="https://chart-studio.plotly.com", showLink=true)
 
 
-pl = plot(plots, layout; 
-    options=Dict(:showLink => true, :toImageButtonOptions => Dict(:format=>"webp")))
+
+pl = plot(plots, layout; config=config)
+
 display(pl)
 
 savejson(pl, "plot.json")

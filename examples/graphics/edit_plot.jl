@@ -23,8 +23,9 @@ layout = default_layout_3d(autosize=true)
 # layout = default_layout_3d(width=400, height=400)
 layout[:showLegend] = true
 
-pl = plot(plots, layout; 
-    options=Dict(:plotlyServerURL=>"https://chart-studio.plotly.com", :showSendToCloud=>true, :showLink => true))
+config  = PlotConfig(plotlyServerURL="https://chart-studio.plotly.com", showLink=true)
+pl = plot(plots, layout; config = config)
+
 display(pl)
 true
 

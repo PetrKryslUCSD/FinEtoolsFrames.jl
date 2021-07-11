@@ -226,22 +226,25 @@ end
     render(traces; kwargs...)
 
 Render a plot
+
+Key word arguments:
+- `config = PlotConfig()`
 """
 function render(traces; kwargs...)
     layout = default_layout_3d(; kwargs...)
     if :layout in keys(kwargs)
         layout = kwargs[:layout]; kwargs = removepair(kwargs, :layout)
     end
-    # Default options: show the safe the chart studio button
-    options = Dict(
-        :showSendToCloud=>true, 
-        :plotlyServerURL=>"https://chart-studio.plotly.com"
+    # Default options: show the "save to chart studio" button
+    config = PlotConfig(
+        showLink=true, 
+        plotlyServerURL="https://chart-studio.plotly.com"
         )
-    # Should we override options because they were supplied as argument?
-    if :options in keys(kwargs)
-        options = kwargs[:options]; kwargs = removepair(kwargs, :options)
+    # Should we override config because they were supplied as argument?
+    if :config in keys(kwargs)
+        config = kwargs[:config]; kwargs = removepair(kwargs, :config)
     end
-    p = plot(traces, layout; options = options)
+    p = plot(traces, layout; config = config)
     display(p)
     return p
 end

@@ -448,8 +448,6 @@ version = "1.6.0"
 [[PlotlyBase]]
 deps = ["Base64", "Dates", "DelimitedFiles", "DocStringExtensions", "JSON", "Kaleido_jll", "LaTeXStrings", "Logging", "Parameters", "Pkg", "REPL", "Requires", "Statistics", "UUIDs"]
 git-tree-sha1 = "b29c63ad0b1fb313bf42f6bb1260959cbaf57b8b"
-repo-rev = "master"
-repo-url = "https://github.com/sglyon/PlotlyBase.jl.git"
 uuid = "a03496cd-edff-5a9b-9e67-9cda94a718b5"
 version = "0.6.4"
 
